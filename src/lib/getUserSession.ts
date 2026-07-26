@@ -15,8 +15,6 @@ export const getUserSession = async () => {
     return user;
   } catch (error) {
     console.log(error);
-    const cookieStore = await cookies();
-    cookieStore.delete("access_token");
     return null;
   }
 };

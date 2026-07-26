@@ -27,7 +27,6 @@
       --ink:    #0d0d12;
       --paper:  #f7f5f0;
       --cream:  #faf8f4;
-      --accent: #e8440a;
       --muted:  #9b9691;
       --border: rgba(13,13,18,.09);
       --glass:  rgba(247,245,240,.92);
@@ -329,7 +328,11 @@
     }
 
   `;
-  document.head.appendChild(style);
+  const wrapper = document.createElement("div");
+  wrapper.id = "supportai-chatbot-wrapper";
+  wrapper.style.setProperty("--accent", "#e8440a");
+  const shadow = wrapper.attachShadow({ mode: "open" });
+  shadow.appendChild(style);
 
   /* ---------------------------- Toggle Btn --------------------------- */
   const button = document.createElement("button");
@@ -396,8 +399,9 @@
     }
   };
 
-  document.body.appendChild(button);
-  document.body.appendChild(chat_box);
+  shadow.appendChild(button);
+  shadow.appendChild(chat_box);
+  document.body.appendChild(wrapper);
 
   const messages = chat_box.querySelector("#chatbot-messages");
   const chat_input = chat_box.querySelector("#chat-input");
@@ -412,7 +416,7 @@
         const a = cfg.appearance;
 
         if (a.accentColor) {
-          document.documentElement.style.setProperty("--accent", a.accentColor);
+          wrapper.style.setProperty("--accent", a.accentColor);
         }
 
         const name_el = chat_box.querySelector(".cb-header-name");
