@@ -1,26 +1,25 @@
 <div align="center">
 
-# <img alt="SupportAI" src="public/favicon.png" width="40" height="40" align="center" style="vertical-align: middle; margin-right: 8px;"> SupportAI
+# <a href="https://supportai-seven.vercel.app" style="color: white; text-decoration: none;"><img alt="SupportAI" src="public/favicon.png" width="40" height="40" align="center" style="vertical-align: middle; margin-right: 2px; margin-bottom: 4px;"> SupportAI</a>
 
 **AI-powered customer support, trained on your knowledge.**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot/pulls)
-[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![LangChain](https://img.shields.io/badge/LangChain-Core-blue?logo=chainlink)](https://js.langchain.com/)
 
-[Features](#features) · [Demo](#demo) · [Getting Started](#getting-started) · [Architecture](#architecture) · [API](#api-reference) · [Contributing](#contributing)
+[English](README.md) | [हिंदी](README.hi.md) | [बांলা](README.bn.md)
 
 </div>
 
 ---
 
-Build custom AI support agents that know your business. Configure personality, tone, and provider per agent. Add your knowledge — files, URLs, text, or Notion — and embed a zero-dependency chat widget on any site with one `<script>` tag. No third-party processors, no hidden costs, no data leaving your stack.
-
 <div align="center">
 
-[🚀 Get Started](#getting-started) · [🌐 Live Demo](https://supportai-seven.vercel.app)
+Build custom AI support agents that know your business. Configure personality, tone, and provider per agent. Add your knowledge — files, URLs, text, or Notion — and embed a zero-dependency chat widget on any site with one `<script>` tag. No third-party processors, no hidden costs, no data leaving your stack.
+
+</div>
+
+<div align="center">
 
 </div>
 
@@ -44,359 +43,146 @@ Built for businesses, developers, and SaaS products that want intelligent, on-br
 | ------------------------ | ----------------------------------------------------------------------------- |
 | **AI Chat**              | Natural, context-aware responses powered by Gemini or GPT                     |
 | **RAG Knowledge Base**   | Upload PDFs, DOCX, TXT, MD, CSV — or paste text, scrape a URL, connect Notion |
-| **Notion Plugin**        | Index Notion pages and databases as knowledge sources                         |
 | **Custom Persona**       | Configure bot name, communication tone, and personality per agent             |
 | **Embed Widget**         | Drop-in `<script>` tag — 5KB vanilla JS, zero dependencies, any site          |
 | **Multi-provider**       | Per-agent choice of Google Gemini or OpenAI, with own model and API key       |
 | **Conversation History** | Multi-turn chats persisted per visitor session                                |
 | **Analytics Dashboard**  | Account-level stats, 14-day message chart, top agents, per-bot analytics      |
-| **Scalekit B2B Auth**    | Enterprise OAuth with automatic tenant isolation                              |
 
 ---
 
-## Tech Stack
+## Build Your First Agent
 
-### Framework
+Agents are created and managed from the **Dashboard**. Sign in, then click **New agent**. Each agent is fully self-contained — its own provider, model, and API key — so you can mix and match providers across your account.
 
-| Logo                                                                            | Name                                          | Purpose                                |
-| ------------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
-| ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)          | [Next.js 16](https://nextjs.org/)             | Fullstack React framework (App Router) |
-| ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)               | [React 19](https://react.dev/)                | UI library                             |
-| ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript) | [TypeScript](https://www.typescriptlang.org/) | Type safety                            |
+The creation flow is a 4-step wizard:
 
-### AI / LLM
+### Step 1 — Basics
 
-| Logo                                                                          | Name                                                           | Purpose                             |
-| ----------------------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------- |
-| ![Gemini](https://img.shields.io/badge/Gemini-API-4285F4?logo=google)         | [Google Generative AI](https://github.com/googleapis/js-genai) | Gemini chat + embeddings            |
-| ![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai)         | [OpenAI SDK](https://platform.openai.com/)                     | GPT chat + embeddings               |
-| ![LangChain](https://img.shields.io/badge/LangChain-Core-blue?logo=chainlink) | [LangChain Core](https://js.langchain.com/)                    | Unified chat / embeddings interface |
+Give your agent context so it stays on-brand:
 
-### Database & Storage
+- **Agent name** — an internal label you'll recognize later (e.g. "Acme Returns")
+- **Business name** + **Industry** — used to ground the agent's tone and terminology
+- **Support email** — shown to visitors when the bot escalates to a human
+- **Business description** — a short paragraph about what you offer, who you serve, and what sets you apart
 
-| Logo                                                                           | Name                                            | Purpose                 |
-| ------------------------------------------------------------------------------ | ----------------------------------------------- | ----------------------- |
-| ![MongoDB](https://img.shields.io/badge/MongoDB-9-47A248?logo=mongodb)         | [MongoDB / Mongoose 9](https://mongoosejs.com/) | Primary data store      |
-| ![Pinecone](https://img.shields.io/badge/Pinecone-Vector-764ABC?logo=pinecone) | [Pinecone](https://www.pinecone.io/)            | Vector database for RAG |
+### Step 2 — Persona
 
-### Authentication
+Make the agent feel like part of your team:
 
-| Logo                                                                  | Name                                  | Purpose                         |
-| --------------------------------------------------------------------- | ------------------------------------- | ------------------------------- |
-| ![Scalekit](https://img.shields.io/badge/Scalekit-B2B%20OAuth-6366F1) | [Scalekit SDK](https://scalekit.com/) | B2B OAuth with tenant isolation |
+- **Bot display name** — the name shown in the chat window (e.g. "Aria", "Max")
+- **Communication tone** — pick from Friendly, Professional, Casual, Formal, Empathetic, Concise, Playful, or Technical
+- **Personality & instructions** — free-form guidance: how it greets users, topics to avoid, edge-case handling, etc.
 
-### UI & Styling
+### Step 3 — Model & Key
 
-| Logo                                                                                | Name                                        | Purpose                 |
-| ----------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------- |
-| ![Tailwind](https://img.shields.io/badge/Tailwind-CSS%20v4-06B6D4?logo=tailwindcss) | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first CSS       |
-| ![Motion](https://img.shields.io/badge/Motion-React-FF6B6B)                         | [Motion](https://motion.dev/)               | Animations              |
-| ![shadcn](https://img.shields.io/badge/shadcn/ui-000000?logo=shadcnui)              | [shadcn/ui](https://ui.shadcn.com/)         | Primitive UI components |
-| ![Recharts](https://img.shields.io/badge/Recharts-Charts-8884D8)                    | [Recharts](https://recharts.org/)           | Analytics charts        |
+Choose the brain behind the agent:
 
-### Dev Tooling
+- **Provider** — Google Gemini or OpenAI
+- **Model** — e.g. Gemini 2.0 Flash or GPT-4o mini
+- **API key** — paste a key from your provider's console. Each agent uses its own key, so you can track cost per agent.
 
-| Logo                                                                      | Name                                       | Purpose              |
-| ------------------------------------------------------------------------- | ------------------------------------------ | -------------------- |
-| ![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?logo=eslint)       | [ESLint](https://eslint.org/)              | Code quality         |
-| ![Prettier](https://img.shields.io/badge/Prettier-3-F7B93E?logo=prettier) | [Prettier](https://prettier.io/)           | Code formatting      |
-| ![Husky](https://img.shields.io/badge/Husky-9-FF4088)                     | [Husky](https://typicode.github.io/husky/) | Pre-commit hooks     |
-| ![Commitlint](https://img.shields.io/badge/Commitlint-21-000000)          | [Commitlint](https://commitlint.js.org/)   | Conventional commits |
+### Step 4 — Review
+
+Check the summary, then decide:
+
+- Toggle **Make live now** to publish the agent to embedded sites immediately — or leave it in draft and finish configuring first.
+
+> Once created, you can open **Config** to switch the status between **draft** and **live** at any time. An agent must be **live** before visitors can chat with it through the embed widget.
 
 ---
 
-## Getting Started
+## Add Knowledge
 
-### Prerequisites
+An agent is only as smart as the information you give it. After creating an agent, open its **Knowledge** tab and add sources. You can use any combination:
 
-- **Node.js 20+** (recommended)
-- **npm** (other package managers not supported — see `.npmrc`)
-- **MongoDB** instance (Atlas or local)
-- **Scalekit** account for B2B OAuth
-- **Google AI Studio** API key (Gemini) **or** **OpenAI** API key
-- **Pinecone** index (optional, for RAG — requires 768-dimension cosine index)
+| Source     | Format                  | When to use it                                           |
+| ---------- | ----------------------- | -------------------------------------------------------- |
+| **Text**   | Plain text              | Paste FAQs, policies, product details, or return reasons |
+| **URL**    | Web page URL            | Scrape a help article, docs page, or product page        |
+| **File**   | PDF, DOCX, TXT, MD, CSV | Upload a manual, spreadsheet, or long-form document      |
+| **Notion** | Page or database ID     | Index your Notion workspace content                      |
 
-### Installation
+### Adding a source
 
-```bash
-git clone https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot.git
-cd AI-Customer-Support-Chatbot
-npm install
-```
+1. Open the agent → **Knowledge** tab.
+2. Pick a source type from the tabs: **Text**, **URL**, **File**, or **Notion**.
+3. Fill in the content and click **Add to knowledge base**.
+4. The document is indexed and its status updates in the list below:
 
-### Environment Variables
+| Status         | What it means                                       |
+| -------------- | --------------------------------------------------- |
+| **ready**      | Indexed and available to answer questions           |
+| **processing** | Still being split and embedded — check back         |
+| **error**      | Something went wrong — re-add or try a smaller file |
 
-Copy `.env.example` to `.env.local`:
+> Notion requires an integration token set up once in **Plugins**. Make sure your integration is invited to the page or database you want to index (share → invite → your integration name).
 
-```bash
-cp .env.example .env.local
-```
-
-| Variable                   | Required | Description                                    |
-| -------------------------- | -------- | ---------------------------------------------- |
-| `NEXT_PUBLIC_API_URI`      | Yes      | Application URL (e.g. `http://localhost:3000`) |
-| `SCALEKIT_ENVIRONMENT_URL` | Yes      | Scalekit tenant environment URL                |
-| `SCALEKIT_CLIENT_ID`       | Yes      | Scalekit OAuth client ID                       |
-| `SCALEKIT_CLIENT_SECRET`   | Yes      | Scalekit OAuth client secret                   |
-| `MONGODB_URI`              | Yes      | MongoDB connection string                      |
-| `PINECONE_API_KEY`         | No       | Pinecone API key (required for RAG)            |
-| `PINECONE_INDEX`           | No       | Pinecone index name (required for RAG)         |
-
-### Run
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-### Deploy to Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot)
+Each knowledge source is automatically split into chunks and made searchable, so the agent can find the most relevant answers to each question you ask it.
 
 ---
 
-## How It Works
+## Embed on Your Site
 
-1. 🤖 **Create your agent** — configure name, business info, persona, AI provider (Gemini or OpenAI), and API key
-2. 📚 **Add your knowledge** — upload files (PDF, DOCX, TXT, MD, CSV), paste text, scrape URLs, or connect Notion pages
-3. 🌐 **Embed on your site** — copy one `<script>` tag. Zero dependencies. Works on any website.
+Once an agent is **live**, you can put it on any website:
 
-### RAG Pipeline
-
-```
-Knowledge Source → Extract Text → Chunk (1000 chars, 150 overlap)
-                                         ↓
-                                   Embed (768d)
-                                         ↓
-                                   Pinecone Vector Store
-                                         ↓
-User Query → Embed (768d) → Similarity Search → Top 5 Chunks
-                                         ↓
-                              LLM (Gemini / GPT) + System Prompt
-                                         ↓
-                                    Response
-```
-
----
-
-## Knowledge Sources
-
-| Source      | Format                  | Description                                                              |
-| ----------- | ----------------------- | ------------------------------------------------------------------------ |
-| File Upload | PDF, DOCX, TXT, MD, CSV | Text extracted server-side, embedded, and indexed                        |
-| URL Scrape  | URL                     | HTML fetched, stripped to plain text                                     |
-| Raw Text    | Plain text              | Directly indexed content                                                 |
-| Notion      | Pages & Databases       | Connected via Notion Integration Token (configured in dashboard Plugins) |
-
-Each source is chunked (1000 characters, 150 overlap), embedded into 768-dimensional vectors, and stored in Pinecone. At query time, the top-5 most relevant chunks are retrieved and prepended to the LLM's system prompt.
-
----
-
-## Embed Widget
-
-Add this script tag just before your closing `</body>` tag:
+1. Open the agent → **Embed** tab.
+2. Copy the single script tag.
+3. Paste it into your site's HTML, just before the closing `</body>` tag.
+4. Save and deploy — the chat widget appears in the bottom-right corner.
 
 ```html
 <script src="https://your-domain.com/chat_bot.js" data-bot-id="MONGODB_OBJECT_ID"></script>
 ```
 
-The widget is a **self-contained 5KB vanilla JavaScript file** — no build step, no dependencies, no framework required. It:
+This script is a self-contained **5KB vanilla JavaScript file** — no build step, no dependencies, no framework required. It works on any static or dynamic site (WordPress, Shopify, Next.js, plain HTML, you name it).
 
-1. Creates a floating chat button (bottom-right, dark theme)
-2. Generates an anonymous session ID stored in `localStorage`
-3. Fetches `/api/chat/config` for per-bot theming (accent color, display name, avatar, welcome message)
-4. Opens a responsive chat box with message history, typing indicator, and input
-5. Sends messages to `POST /api/chat` with `botId` and `sessionId`
+The widget automatically:
 
-**Responsive:** Full-width on mobile (≤480px), 380px on tablet, 400×560 desktop.
+- Uses the **accent color**, **display name**, **avatar**, and **welcome message** you set in the agent's **Appearance** tab
+- Generates an anonymous session ID (stored in `localStorage`) so multi-turn conversations persist across page loads
+- Is responsive — full-width on mobile, compact on desktop
 
-<!-- Add widget screenshot here -->
+**Responsive sizing:** Full-width on mobile (≤480px), 380px on tablet, 400×560 on desktop.
 
 ---
 
-## Project Structure
+## Dashboard Guide
 
-```
-src/
-├── app/
-│   ├── (user)/dashboard/        # Dashboard pages (protected by authentication)
-│   │   ├── account/             # Profile, API key info, logout
-│   │   ├── agents/              # Agent list + 4-step create wizard
-│   │   └── bots/[botId]/        # Per-bot: stats, playground, config, knowledge,
-│   │                            #   appearance, embed snippet, conversations
-│   ├── api/
-│   │   ├── auth/                # OAuth login, callback verify, logout
-│   │   ├── chat/                # Chat endpoint + widget config (CORS open)
-│   │   ├── chatbots/            # Full CRUD + documents + analytics + conversations
-│   │   └── account/             # Account-level data
-│   ├── globals.css              # Tailwind v4 theme (warm palette)
-│   ├── layout.tsx               # Root layout
-│   ├── page.tsx                 # Landing page (redirects if authenticated)
-│   ├── not-found.tsx            # Custom 404
-│   └── error.tsx                # Error boundary with retry
-│
-├── components/
-│   ├── dashboard/               # Dashboard client components
-│   │   ├── AgentsGrid.tsx, AgentPlayground.tsx, AppSidebar.tsx
-│   │   ├── AppearanceForm.tsx, BotConfigForm.tsx
-│   │   ├── ConversationsView.tsx, CreateAgentWizard.tsx
-│   │   ├── DeleteBotSection.tsx, KnowledgeManager.tsx
-│   │   ├── OverviewChart.tsx, OverviewContent.tsx
-│   │   ├── PageTransition.tsx, TabBar.tsx
-│   │   └── ...
-│   ├── ui/                      # shadcn/ui primitives (button, card, dialog, etc.)
-│   └── ...                      # Landing page sections (Navbar, Hero, Features, etc.)
-│
-├── hooks/                       # TanStack React Query hooks
-│   ├── use-bots.ts              # Chatbot CRUD mutations
-│   ├── use-chat.ts              # Chat mutation
-│   ├── use-conversations.ts     # Conversation queries
-│   ├── use-documents.ts         # Document CRUD
-│   └── use-mobile.ts            # Responsive sidebar detection
-│
-├── lib/                         # Server-side utilities
-│   ├── ai.ts                    # LangChain model factory (Gemini / OpenAI)
-│   ├── analytics.ts             # Account-level analytics aggregator
-│   ├── auth.ts                  # requireOwner() — tenant-isolated session guard
-│   ├── chatbot.model.ts         # Mongoose schema for bots
-│   ├── db.ts                    # MongoDB singleton connection (globalThis cache)
-│   ├── env.ts                   # Environment variable validation (Zod)
-│   ├── extractFile.ts           # PDF/DOCX/TXT/MD/CSV/Notion text extraction
-│   ├── knowledge.ts             # System prompt builder from bot config
-│   ├── options.ts               # Provider/model definitions (client-safe)
-│   ├── providerKey.ts           # Resolves per-bot API key and model
-│   ├── rag.ts                   # Pinecone vector store operations
-│   ├── scalekit.ts              # Scalekit client initialization
-│   └── utils.ts                 # cn() class name merger
-│
-├── models/                      # Mongoose schemas
-│   ├── chatbot.model.ts         # Bot config (provider, appearance, knowledge, etc.)
-│   ├── chunk.model.ts           # Vector chunk metadata
-│   ├── conversation.model.ts    # Visitor conversation sessions
-│   ├── document.model.ts        # Knowledge documents
-│   ├── message.model.ts         # Chat messages
-│   └── owner.model.ts           # Account-level data (Notion token, API keys)
-│
-├── providers/
-│   └── query-provider.tsx       # TanStack Query provider wrapper
-│
-└── proxy.ts                     # (Unused — intended middleware, not at middleware.ts)
+Everything you need to build, tune, and monitor your agents lives in the Dashboard.
 
-public/
-└── chat_bot.js                  # Embed widget (self-contained vanilla JS, 5KB)
-```
+### Account-wide views
+
+| Page                             | What you see                                                                                                                                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Overview** (`/dashboard`)      | A snapshot across all your agents: total agents, live count, conversations, messages, a 14-day message chart, your top agents, and recent conversations. Click **New agent** from here to start. |
+| **Agents** (`/dashboard/agents`) | A grid of every agent you've created. Each card shows its status (live/draft) and a quick **Open** link to manage it. Use the three-dot menu to delete an agent.                                 |
+
+### Per-agent views
+
+Open any agent to see its tab bar:
+
+| Tab               | What you do here                                                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Overview**      | Quick stats: conversation count, message count, last active time, and key details (provider, model, API key status).                             |
+| **Playground**    | Test your agent right in the browser. Send messages and see replies — without saving anything to the conversation history.                       |
+| **Config**        | Edit the agent name, status (draft/live), business info, persona, provider, model, and API key. Also where you can permanently delete the agent. |
+| **Knowledge**     | Add, browse, and remove knowledge sources (Text, URL, File, Notion). Watch each document progress from `processing` to `ready`.                  |
+| **Appearance**    | Customize how the embedded widget looks: accent color, display name, avatar image URL, and welcome message. A live preview updates as you type.  |
+| **Embed**         | Grab the `<script>` snippet for this agent and confirm it's **live**.                                                                            |
+| **Conversations** | Browse every visitor session for this agent. Click a session to read the full transcript.                                                        |
 
 ---
 
-## API Reference
+## How It Works
 
-All endpoints return `{ success: boolean, message?: string, data?: any, error?: any }`.
+1. **Create your agent** — give it a name, business context, and personality.
+2. **Pick a provider** — choose Google Gemini or OpenAI, and paste that agent's API key.
+3. **Add your knowledge** — upload files, paste text, scrape URLs, or connect Notion.
+4. **Test in the Playground** — refine the persona and tone until it sounds right.
+5. **Embed** — copy one `<script>` tag and drop it on your site.
 
-### Authentication
-
-| Method | Endpoint                 | Auth | Description                                              |
-| ------ | ------------------------ | ---- | -------------------------------------------------------- |
-| `GET`  | `/api/auth/login`        | —    | Redirect to Scalekit OAuth                               |
-| `GET`  | `/api/auth/verify?code=` | —    | OAuth callback → sets cookie → redirects to `/dashboard` |
-| `GET`  | `/api/auth/logout`       | —    | Deletes cookie → redirects to `/`                        |
-
-### Chat
-
-| Method | Endpoint                  | Auth     | Description                                                                         |
-| ------ | ------------------------- | -------- | ----------------------------------------------------------------------------------- |
-| `POST` | `/api/chat`               | CORS `*` | Send a prompt. Multi-turn via `sessionId`. Use `preview: true` to skip persistence. |
-| `GET`  | `/api/chat/config?botId=` | CORS `*` | Bot appearance (accent color, avatar, display name, welcome message)                |
-
-### Chatbots
-
-| Method   | Endpoint                | Auth    | Description                                                                |
-| -------- | ----------------------- | ------- | -------------------------------------------------------------------------- |
-| `GET`    | `/api/chatbots`         | Session | List all bots for the authenticated owner                                  |
-| `POST`   | `/api/chatbots`         | Session | Create a new bot (defaults provided for empty body)                        |
-| `GET`    | `/api/chatbots/[botId]` | Session | Get a single bot                                                           |
-| `PUT`    | `/api/chatbots/[botId]` | Session | Update bot config                                                          |
-| `DELETE` | `/api/chatbots/[botId]` | Session | Delete bot + cascade (vectors, conversations, messages, documents, chunks) |
-
-### Documents
-
-| Method   | Endpoint                                  | Auth    | Description                                                       |
-| -------- | ----------------------------------------- | ------- | ----------------------------------------------------------------- |
-| `GET`    | `/api/chatbots/[botId]/documents`         | Session | List knowledge documents                                          |
-| `POST`   | `/api/chatbots/[botId]/documents`         | Session | Ingest document (multipart file, URL scrape, raw text, or Notion) |
-| `DELETE` | `/api/chatbots/[botId]/documents/[docId]` | Session | Delete document + vectors                                         |
-
-### Analytics & Conversations
-
-| Method | Endpoint                              | Auth    | Description                                                  |
-| ------ | ------------------------------------- | ------- | ------------------------------------------------------------ |
-| `GET`  | `/api/chatbots/[botId]/analytics`     | Session | Per-bot stats (conversations, messages, last active)         |
-| `GET`  | `/api/chatbots/[botId]/conversations` | Session | List conversations or get transcript with `?conversationId=` |
-
----
-
-## Contributing
-
-### Workflow
-
-```bash
-# Fork the repository
-# Create a feature branch
-git checkout -b feat/my-feature
-
-# Make changes and commit
-git add .
-git commit -m "feat: add my feature"
-
-# Before pushing, ensure lint + format pass
-npm run lint
-npm run format:fix
-
-# Push and open a PR
-git push origin feat/my-feature
-```
-
-### Branch Naming
-
-| Prefix   | Use Case                      |
-| -------- | ----------------------------- |
-| `feat/`  | New features                  |
-| `fix/`   | Bug fixes                     |
-| `docs/`  | Documentation changes         |
-| `chore/` | Tooling or dependency changes |
-
-### Conventional Commits
-
-| Type       | When to Use              |
-| ---------- | ------------------------ |
-| `feat`     | A new feature            |
-| `fix`      | A bug fix                |
-| `docs`     | Documentation only       |
-| `refactor` | Code restructuring       |
-| `chore`    | Tooling, config, or deps |
-
-### Commit Hooks
-
-| Hook         | Runs                                                  |
-| ------------ | ----------------------------------------------------- |
-| `pre-commit` | `npm run lint` + `npm run format` (runs on all files) |
-| `commit-msg` | `commitlint` — validates conventional commit format   |
-
-**Note:** Pre-commit runs `npm run format` (check), not `npm run format:fix`. Run `npm run format:fix` before committing to avoid hook failures.
-
----
-
-## Roadmap
-
-- [x] File upload (PDF, DOCX, TXT, MD, CSV)
-- [x] URL scraping
-- [x] Notion plugin (pages & databases)
-- [ ] Slack integration
-- [ ] WhatsApp integration
-- [ ] Zapier integration
-- [ ] Webhooks
-- [ ] REST API access
-- [ ] Usage analytics per document
+At chat time, the agent combines your configured persona (system prompt) with the most relevant knowledge retrieved from your sources, then responds through your chosen provider — all in your own stack.
 
 ---
 
