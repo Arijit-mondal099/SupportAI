@@ -1,5 +1,7 @@
 # AGENTS.md
 
+> **Read these instructions after `@CLAUDE.md`.** `@CLAUDE.md` is the primary instruction file (behavioral guidelines); this file is the repository-specific companion. Read `@CLAUDE.md` first, then this file — together they are your complete instruction set.
+
 ## Commands
 
 | Command              | What it runs                         |
@@ -22,6 +24,22 @@ No test or typecheck scripts exist.
 | `commit-msg` | `npx commitlint --edit` — enforces conventional commits                    |
 
 **Gotcha:** pre-commit runs `format` (check), not `format:fix`. If code isn't already formatted, the hook fails. Run `npm run format:fix` before committing.
+
+## Commands & Skills
+
+This repo ships OpenCode tooling under `.opencode/` and `.claude/skills/`. No `opencode.json` is present, so these paths are auto-discovered.
+
+**Commands** (`.opencode/commands/`, run as `/<name> <args>`):
+
+- `/fix-bug <bug description>` — investigate → present a plan (stops, waits for your approval) → asks to enable mutation tools → implements. Uses only Read/Grep/Glob until approved; writes no code before explicit approval.
+- `/open-pr [<branch-name>]` — stashes the tree, branches from the detected base (`main` then `master`), splits staged + untracked changes into atomic commits, pushes, and prints a pre-filled GitHub PR compare URL (PowerShell `[System.Uri]::EscapeDataString`-encoded). Never merges. Requires a GitHub remote.
+
+**Skills** (`.claude/skills/`, auto-loaded) — pick the one matching the task:
+
+- `frontend-design` — distinctive visual design, typography, intentional UI aesthetics.
+- `ui-ux-pro-max` — UI/UX guidance across stacks: color palettes, font pairings, breakpoints, motion.
+- `vercel-react-best-practices` — React/Next.js performance, bundling, rendering, rerender optimization.
+- `web-design-guidelines` — accessibility and UI guideline compliance review.
 
 ## Environment
 
@@ -69,11 +87,11 @@ Copy `.env.example` → `.env.local`.
 
 ## Non-obvious details
 
-- `next.config.ts` excludes `pdf-parse`, `pdfjs-dist`, and `mammoth` from server bundle via `serverExternalPackages` — they ship their own workers.
+- `next.config.ts` force-excludes `mammoth` via `serverExternalPackages` (it doesn't bundle cleanly under Next's server build). PDF text is extracted with `unpdf` via a dynamic `import("unpdf")` in `src/lib/extractFile.ts`, so it needs no special config. (`pdf-parse`/`pdfjs-dist` are not used.)
 - `.editorconfig` says `indent_size = 4` but `.prettierrc` enforces `tabWidth: 2`. Prettier wins in practice; be aware of the mismatch in editor defaults.
 - Document ingestion supports 4 source types: `file` (PDF/DOCX/TXT/MD/CSV), `url`, `text`, and `notion` (page or database via Notion SDK).
 - One-off migration script at `scripts/migrate-business-to-chatbot.mjs` — run with `node --env-file=.env.local scripts/migrate-business-to-chatbot.mjs`. Safe to re-run.
-- CLAUDE.md in the root contains generic behavioral guidelines (bias toward caution, surgical edits, simplicity-first). Not repo-specific but actively referenced.
+- **Companion to `@CLAUDE.md`**: `@CLAUDE.md` is the **primary** instruction file (behavioral guidelines); read it **first**, then read this file. The two together form the complete agent instruction set for this repository.
 
 ## Providers & models
 

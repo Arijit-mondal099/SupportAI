@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+**Primary instruction set — read this first, then `@AGENTS.md`.** Together these two files form the complete agent instruction set for this repository: this file defines how you work (behavioral guidelines), `@AGENTS.md` defines what you're working on (repo commands, architecture, gotchas). If you have only loaded one, read the other before taking action.
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.

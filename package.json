@@ -1,12 +1,31 @@
 {
-  "name": "my-app",
+  "name": "supportai",
   "version": "0.1.0",
+  "description": "AI-powered customer support, trained on your knowledge.",
   "private": true,
+  "keywords": [
+    "ai-chatbot",
+    "customer-support",
+    "support-agent",
+    "knowledge-base",
+    "chat-widget",
+    "embed-chat",
+    "ai-agents",
+    "custom-persona",
+    "conversation-history",
+    "analytics-dashboard",
+    "saas",
+    "business-tools"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "npm@11.6.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint .",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "prepare": "husky"
@@ -58,5 +77,13 @@
     "prettier": "^3.8.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot/issues"
+  },
+  "homepage": "https://github.com/Arijit-mondal099/AI-Customer-Support-Chatbot#readme"
 }
