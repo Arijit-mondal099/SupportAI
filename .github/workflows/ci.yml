@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION_FILE: .nvmrc
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ env.NODE_VERSION_FILE }}
+          cache: npm
+
+      - name: Setup package manager
+        run: corepack enable
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ env.NODE_VERSION_FILE }}
+          cache: npm
+
+      - name: Setup package manager
+        run: corepack enable
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ env.NODE_VERSION_FILE }}
+          cache: npm
+
+      - name: Setup package manager
+        run: corepack enable
+
+      - run: npm ci
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-cache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-next-cache-
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_API_URI: http://localhost:3000
+          SCALEKIT_ENVIRONMENT_URL: https://stub.scalekit.dev
+          SCALEKIT_CLIENT_ID: skc_stub
+          SCALEKIT_CLIENT_SECRET: stub_secret
+          MONGODB_URI: mongodb+srv://stub:stub@cluster.mongodb.net/stub
+          PINECONE_API_KEY: stub_pinecone_api_key
+          PINECONE_INDEX: stub_index
+        run: npm run build
