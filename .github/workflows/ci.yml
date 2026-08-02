@@ -54,6 +54,26 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ env.NODE_VERSION_FILE }}
+          cache: npm
+
+      - name: Setup package manager
+        run: corepack enable
+
+      - run: npm ci
+
+      - name: Run tests
+        run: npm test
+
   build:
     name: Build
     runs-on: ubuntu-latest
