@@ -132,7 +132,10 @@ Once an agent is **live**, you can put it on any website:
 4. Save and deploy — the chat widget appears in the bottom-right corner.
 
 ```html
-<script src="https://your-domain.com/chat_bot.js" data-bot-id="MONGODB_OBJECT_ID"></script>
+<script
+  src="https://supportai-seven.vercel.app/chat_bot.js"
+  data-bot-id="YOUR_CHAT_BOT_ID"
+></script>
 ```
 
 This script is a self-contained **5KB vanilla JavaScript file** — no build step, no dependencies, no framework required. It works on any static or dynamic site (WordPress, Shopify, Next.js, plain HTML, you name it).
