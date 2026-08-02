@@ -132,7 +132,10 @@ SupportAI एक फ़ुल-स्टैक प्लेटफ़ॉर्म 
 4. सहेजें और डिप्लॉय करें — चैट विजेट नीचे-दाएँ कोने में दिखाई देगा।
 
 ```html
-<script src="https://your-domain.com/chat_bot.js" data-bot-id="MONGODB_OBJECT_ID"></script>
+<script
+  src="https://supportai-seven.vercel.app/chat_bot.js"
+  data-bot-id="YOUR_CHAT_BOT_ID"
+></script>
 ```
 
 यह स्क्रिप्ट एक स्वतंत्र **5KB वैनिला जावास्क्रिप्ट फ़ाइल** है — कोई बिल्ड स्टेप नहीं, कोई निर्भरता नहीं, कोई फ्रेमवर्क नहीं चाहिए। यह किसी भी स्थिर या गतिशील साइट (WordPress, Shopify, Next.js, साधारण HTML — जो भी) पर काम करता है।

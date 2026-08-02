@@ -132,7 +132,10 @@ SupportAI হল একটি ফুলস্ট্যাক প্ল্যা�
 4. সংরক্ষণ এবং ডিপ্লয় করুন — চ্যাট উইজেট নিচে-ডান কোণায় দেখা যাবে।
 
 ```html
-<script src="https://your-domain.com/chat_bot.js" data-bot-id="MONGODB_OBJECT_ID"></script>
+<script
+  src="https://supportai-seven.vercel.app/chat_bot.js"
+  data-bot-id="YOUR_CHAT_BOT_ID"
+></script>
 ```
 
 এই স্ক্রিপ্টটি একটি স্বাধীন **5KB ভ্যানিলা জাভাস্ক্রিপ্ট ফাইল** — কোনো বিল্ড স্টেপ নেই, কোনো নির্ভরতা নেই, কোনো ফ্রেমওয়ার্ক লাগে না। এটি যেকোনো স্ট্যাটিক বা ডাইনামিক সাইটে (WordPress, Shopify, Next.js, সাধারণ HTML — যেকোনোটাই) কাজ করে।
