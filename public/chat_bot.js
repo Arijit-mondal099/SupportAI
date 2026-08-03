@@ -482,6 +482,12 @@
       typing.remove();
       if (val.success && val.data?.text) {
         add_message(val.data.text, "model");
+      } else if (res.status === 429) {
+        const retryAfter = res.headers.get("Retry-After");
+        const msg = retryAfter
+          ? `Rate limit: please wait ${retryAfter} second${retryAfter == 1 ? "" : "s"} before sending another message.`
+          : "Rate limit: please slow down a bit and try again soon.";
+        add_message(msg, "model");
       } else {
         add_message(
           val.message || "Sorry, I'm not available right now. Please try again later.",
