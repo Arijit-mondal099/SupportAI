@@ -1,5 +1,7 @@
 import { getChatModel } from "@/lib/ai";
 import { db_connection } from "@/lib/db";
+import { Cache } from "@/lib/cache";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { supportsEmbeddings } from "@/lib/options";
 import { resolveProviderKey } from "@/lib/providerKey";
 import { isRagConfigured, retrieve } from "@/lib/rag";
@@ -30,6 +32,22 @@ export async function POST(request: NextRequest) {
       );
     }
     const { prompt, botId, ownerId, sessionId, preview, history } = parsed.data;
+
+    const clientIp = getClientIp(request);
+    const rateId = botId && isValidObjectId(botId) ? botId : ownerId || "unknown";
+    const rl = await rateLimit(`rl:chat:${rateId}:${clientIp}`, preview ? 60 : 20, 60);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, message: "Rate limit exceeded. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders,
+            "Retry-After": String(rl.resetIn),
+          },
+        },
+      );
+    }
 
     await db_connection();
 
@@ -139,6 +157,13 @@ export async function POST(request: NextRequest) {
         console.error("Failed to log conversation", logErr);
       }
     }
+
+    // Invalidate analytics + conversation caches for this bot (best-effort).
+    const botOwnerId = typeof bot.ownerId === "string" ? bot.ownerId : String(bot.ownerId);
+    void Cache.delete(`cache:analytics:${botOwnerId}`);
+    void Cache.delete(`cache:analytics:${botOwnerId}:${String(bot._id)}`);
+    void Cache.delete(`cache:conversations:${String(bot._id)}`);
+    void Cache.deletePattern(`cache:conversation:${String(bot._id)}:*`);
 
     return NextResponse.json(
       { success: true, data: { role: "model", text: reply } },
