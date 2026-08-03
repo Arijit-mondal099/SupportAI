@@ -1,6 +1,7 @@
 import { documentCreateSchema } from "@/lib/validations";
 import { requireOwner } from "@/lib/auth";
 import { db_connection } from "@/lib/db";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   extractTextFromFile,
   extractTextFromNotion,
@@ -80,6 +81,14 @@ export async function POST(request: NextRequest, { params }: Params) {
 
     const { botId } = await params;
     if (!isValidObjectId(botId)) return notFound();
+
+    const rl = await rateLimit(`rl:docs:${owner.ownerId}:${botId}`, 10, 600);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, message: "Document upload rate limit exceeded. Try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.resetIn) } },
+      );
+    }
 
     if (!isRagConfigured()) {
       return bad("Knowledge base is not configured on this server (Pinecone).");

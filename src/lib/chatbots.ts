@@ -1,4 +1,5 @@
 import { isValidObjectId } from "mongoose";
+import { Cache } from "./cache";
 import { db_connection } from "./db";
 import { normalizeProvider, type Provider } from "./options";
 import { APPEARANCE_DEFAULTS, ChatbotModel } from "@/models/chatbot.model";
@@ -67,14 +68,18 @@ export const serializeBot = (bot: any): SerializedBot => {
 };
 
 export const listChatbots = async (ownerId: string): Promise<SerializedBot[]> => {
-  await db_connection();
-  const bots = await ChatbotModel.find({ ownerId }).sort({ createdAt: 1 }).lean();
-  return bots.map(serializeBot);
+  return Cache.memoize(`cache:bots:${ownerId}`, 120, async () => {
+    await db_connection();
+    const bots = await ChatbotModel.find({ ownerId }).sort({ createdAt: 1 }).lean();
+    return bots.map(serializeBot);
+  });
 };
 
 export const getChatbot = async (ownerId: string, botId: string): Promise<SerializedBot | null> => {
   if (!isValidObjectId(botId)) return null;
-  await db_connection();
-  const bot = await ChatbotModel.findOne({ _id: botId, ownerId }).lean();
-  return bot ? serializeBot(bot) : null;
+  return Cache.memoize(`cache:bot:${ownerId}:${botId}`, 120, async () => {
+    await db_connection();
+    const bot = await ChatbotModel.findOne({ _id: botId, ownerId }).lean();
+    return bot ? serializeBot(bot) : null;
+  });
 };
