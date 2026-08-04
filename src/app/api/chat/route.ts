@@ -154,17 +154,18 @@ export async function POST(request: NextRequest) {
           { conversationId: convo._id, botId: bot._id, role: "user", text: prompt },
           { conversationId: convo._id, botId: bot._id, role: "model", text: reply },
         ]);
+
+        // Invalidate caches for this bot (best-effort).
+        // Only delete the specific conversation thread, not all threads.
+        const botOwnerId = typeof bot.ownerId === "string" ? bot.ownerId : String(bot.ownerId);
+        void Cache.delete(`cache:analytics:${botOwnerId}`);
+        void Cache.delete(`cache:analytics:${botOwnerId}:${String(bot._id)}`);
+        void Cache.delete(`cache:conversations:${String(bot._id)}`);
+        void Cache.delete(`cache:conversation:${String(bot._id)}:${String(convo._id)}`);
       } catch (logErr) {
         console.error("Failed to log conversation", logErr);
       }
     }
-
-    // Invalidate analytics + conversation caches for this bot (best-effort).
-    const botOwnerId = typeof bot.ownerId === "string" ? bot.ownerId : String(bot.ownerId);
-    void Cache.delete(`cache:analytics:${botOwnerId}`);
-    void Cache.delete(`cache:analytics:${botOwnerId}:${String(bot._id)}`);
-    void Cache.delete(`cache:conversations:${String(bot._id)}`);
-    void Cache.deletePattern(`cache:conversation:${String(bot._id)}:*`);
 
     return NextResponse.json(
       { success: true, data: { role: "model", text: reply } },
