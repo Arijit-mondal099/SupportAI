@@ -9,12 +9,17 @@
 | `npm run dev`        | `next dev` (dev server on :3000)     |
 | `npm run build`      | `next build`                         |
 | `npm run start`      | `next start`                         |
-| `npm run lint`       | `eslint`                             |
+| `npm run lint`       | `eslint .`                           |
+| `npm run typecheck`  | `tsc --noEmit`                       |
 | `npm run format`     | `prettier --check .`                 |
 | `npm run format:fix` | `prettier --write .`                 |
+| `npm run test`       | `vitest run`                         |
+| `npm run test:watch` | `vitest watch`                       |
 | `npm run prepare`    | `husky` (auto-runs on `npm install`) |
 
-No test or typecheck scripts exist.
+## Verification order
+
+`lint → typecheck → test → format` — pre-commit runs lint+format, so run them first when iterating.
 
 ## Git hooks (husky)
 
@@ -43,19 +48,23 @@ This repo ships OpenCode tooling under `.opencode/` and `.claude/skills/`. No `o
 
 ## Environment
 
-Copy `.env.example` → `.env.local`.
+Copy `.env.example` → `.env`.
 
-| Var                        | Notes                            |
-| -------------------------- | -------------------------------- |
-| `NEXT_PUBLIC_API_URI`      | e.g. `http://localhost:3000`     |
-| `SCALEKIT_ENVIRONMENT_URL` | Scalekit tenant URL              |
-| `SCALEKIT_CLIENT_ID`       | Scalekit OAuth client ID         |
-| `SCALEKIT_CLIENT_SECRET`   | Scalekit OAuth client secret     |
-| `MONGODB_URI`              | MongoDB connection string        |
-| `PINECONE_API_KEY`         | _(optional)_ Gates RAG feature   |
-| `PINECONE_INDEX`           | _(optional)_ Pinecone index name |
+| Var                        | Notes                                       |
+| -------------------------- | ------------------------------------------- |
+| `NEXT_PUBLIC_API_URI`      | e.g. `http://localhost:3000`                |
+| `SCALEKIT_ENVIRONMENT_URL` | Scalekit tenant URL                         |
+| `SCALEKIT_CLIENT_ID`       | Scalekit OAuth client ID                    |
+| `SCALEKIT_CLIENT_SECRET`   | Scalekit OAuth client secret                |
+| `MONGODB_URI`              | MongoDB connection string                   |
+| `PINECONE_API_KEY`         | _(optional)_ Gates RAG feature              |
+| `PINECONE_INDEX`           | _(optional)_ Pinecone index name            |
+| `UPSTASH_REDIS_REST_URL`   | _(optional)_ Redis cache/rate-limit backend |
+| `UPSTASH_REDIS_TOKEN`      | _(optional)_ Redis auth token               |
 
 **Gotcha:** `src/lib/env.ts` validates with Zod but **does not crash on failure** — it logs an error and falls back to empty strings. Required vars (`SCALEKIT_*`, `MONGODB_URI`) will cause failures later, not at startup.
+
+**Redis is optional:** `isCacheEnabled()` / `isRateLimitEnabled()` (in `src/lib/cache.ts` and `src/lib/rate-limit.ts`) check for both `UPSTASH_REDIS_*` vars. When absent, `Cache.get/set/delete` and `rateLimit` are no-ops — the app works but loses caching and rate limiting. No code changes required.
 
 `.npmrc` sets `legacy-peer-deps=true` — use `npm install`, not other package managers.
 
@@ -73,10 +82,12 @@ Copy `.env.example` → `.env.local`.
 ## Key patterns
 
 - **Server / client boundary**: server components fetch data (session, DB) and pass as props to client components. Client components (`"use client"`) handle all interactivity.
-- **Route protection**: `src/proxy.ts` is a Next.js middleware **misnamed and entirely unused** — it exports `config.matcher` and the middleware signature but sits at `src/proxy.ts` instead of `src/middleware.ts`, so it is **never invoked**. Dashboard pages call `requireOwner()` inline instead.
+- **Route protection**: `src/proxy.ts` is a Next.js middleware **misnamed and entirely unused** — it exports `config.matcher` and the middleware signature but sits at `src/proxy.ts` instead of `src/middleware.ts`, so it is **never invoked**. Dashboard pages call `requireOwner()` inline instead (defined in `src/lib/auth.ts:16`).
 - **Auth flow**: `/api/auth/login` → Scalekit → `/api/auth/verify?code=...` → set cookie → redirect to `/dashboard`.
 - **API response shape**: consistently `{ success: boolean, message?: string, data?: any, error?: any }`.
-- **Per-bot API keys**: each agent carries its own provider, model, and API key (`apiKeyOverride` in the model — note the field name) — no account-level fallback.
+- **Per-bot API keys**: each agent carries its own provider, model, and API key (`apiKeyOverride` in the model — note the field name) — no account-level fallback. Resolved in `src/lib/providerKey.ts`.
+- **Redis caching & rate limiting**: `Cache` class (`src/lib/cache.ts`) provides `get`/`set`/`delete`/`deletePattern`/`memoize`; `rateLimit` (`src/lib/rate-limit.ts`) uses a token-bucket Lua script via `redis.eval`. Both gracefully degrade to no-ops when Upstash env vars are absent. Cache invalidation is manual on write paths (PUT/DELETE/POST).
+- **Rate-limit IP resolution**: `getClientIp` in `src/lib/rate-limit.ts` prefers Cloudflare's `cf-connecting-ip` (platform-verified) before `x-forwarded-for` (spoofable), then `x-real-ip`, then `"0.0.0.0"`.
 - **Knowledge base**: two layers — (1) system instruction built from business/persona config via `buildKnowledge()`, (2) optional RAG document retrieval via Pinecone (gated by `PINECONE_API_KEY`).
 - **RAG is optional**: `isRagConfigured()` checks for `PINECONE_API_KEY` + `PINECONE_INDEX`. Without them, only the system instruction is used.
 - **Chat persistence**: preview/playground chats skip DB writes (`preview: true`); embedded chats with `sessionId` persist to Conversation + Message models. History limit is 20 messages (`HISTORY_LIMIT = 20`).
