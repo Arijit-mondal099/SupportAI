@@ -5,6 +5,7 @@ import { db_connection } from "@/lib/db";
 import { listChatbots, serializeBot } from "@/lib/chatbots";
 import { buildKnowledge } from "@/lib/knowledge";
 import { ChatbotModel } from "@/models/chatbot.model";
+import { Cache } from "@/lib/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 const unauthorized = () =>
@@ -54,5 +55,7 @@ export async function POST(request: NextRequest) {
     knowledge: buildKnowledge({ businessInfo, botInfo, supportEmail }),
   });
 
+  await Cache.delete(`cache:bots:${owner.ownerId}`);
+  await Cache.delete(`cache:analytics:${owner.ownerId}`);
   return NextResponse.json({ success: true, bot: serializeBot(bot.toObject()) }, { status: 201 });
 }

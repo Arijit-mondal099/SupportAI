@@ -1,5 +1,7 @@
 import { getChatModel } from "@/lib/ai";
 import { db_connection } from "@/lib/db";
+import { Cache } from "@/lib/cache";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { supportsEmbeddings } from "@/lib/options";
 import { resolveProviderKey } from "@/lib/providerKey";
 import { isRagConfigured, retrieve } from "@/lib/rag";
@@ -15,6 +17,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Expose-Headers": "Retry-After",
 };
 
 // How many prior messages to replay as context for multi-turn conversations.
@@ -30,6 +33,22 @@ export async function POST(request: NextRequest) {
       );
     }
     const { prompt, botId, ownerId, sessionId, preview, history } = parsed.data;
+
+    const clientIp = getClientIp(request);
+    const rateId = botId && isValidObjectId(botId) ? botId : ownerId || "unknown";
+    const rl = await rateLimit(`rl:chat:${rateId}:${clientIp}`, preview ? 60 : 20, 60);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, message: "Rate limit exceeded. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders,
+            "Retry-After": String(rl.resetIn),
+          },
+        },
+      );
+    }
 
     await db_connection();
 
@@ -135,6 +154,14 @@ export async function POST(request: NextRequest) {
           { conversationId: convo._id, botId: bot._id, role: "user", text: prompt },
           { conversationId: convo._id, botId: bot._id, role: "model", text: reply },
         ]);
+
+        // Invalidate caches for this bot (best-effort).
+        // Only delete the specific conversation thread, not all threads.
+        const botOwnerId = typeof bot.ownerId === "string" ? bot.ownerId : String(bot.ownerId);
+        void Cache.delete(`cache:analytics:${botOwnerId}`);
+        void Cache.delete(`cache:analytics:${botOwnerId}:${String(bot._id)}`);
+        void Cache.delete(`cache:conversations:${String(bot._id)}`);
+        void Cache.delete(`cache:conversation:${String(bot._id)}:${String(convo._id)}`);
       } catch (logErr) {
         console.error("Failed to log conversation", logErr);
       }

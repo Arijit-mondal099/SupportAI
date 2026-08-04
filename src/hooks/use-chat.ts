@@ -19,8 +19,14 @@ interface ChatResponse {
 export function useSendMessage() {
   return useMutation({
     mutationFn: async (payload: ChatPayload) => {
-      const { data } = await apiClient.post("/api/chat", payload);
-      return data as ChatResponse;
+      try {
+        const { data } = await apiClient.post("/api/chat", payload);
+        return data as ChatResponse;
+      } catch (error: unknown) {
+        const responseData = (error as { response?: { data?: ChatResponse } })?.response?.data;
+        if (responseData) return responseData;
+        throw error;
+      }
     },
   });
 }

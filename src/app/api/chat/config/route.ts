@@ -1,7 +1,10 @@
+import { Cache } from "@/lib/cache";
 import { db_connection } from "@/lib/db";
 import { ChatbotModel } from "@/models/chatbot.model";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+
+const CONFIG_CACHE_TTL = 300;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,8 +12,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// Public endpoint the embedded widget calls on load to theme itself.
-// Returns appearance only — never any keys or business config.
+const cacheHeaders = {
+  ...corsHeaders,
+  "Cache-Control": `public, s-maxage=${CONFIG_CACHE_TTL}, stale-while-revalidate=${CONFIG_CACHE_TTL * 2}`,
+};
+
 export async function GET(request: NextRequest) {
   const botId = request.nextUrl.searchParams.get("botId");
 
@@ -18,6 +24,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { success: false, message: "Invalid botId" },
       { status: 400, headers: corsHeaders },
+    );
+  }
+
+  const cacheKey = `cache:bot_config:${botId}`;
+  const cached = await Cache.get<{ appearance: Record<string, unknown> }>(cacheKey);
+  if (cached) {
+    return NextResponse.json(
+      { success: true, appearance: cached.appearance },
+      { status: 200, headers: cacheHeaders },
     );
   }
 
@@ -37,10 +52,10 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json(
-    { success: true, appearance: bot.appearance },
-    { status: 200, headers: corsHeaders },
-  );
+  const response = { success: true, appearance: bot.appearance };
+  await Cache.set(cacheKey, { appearance: bot.appearance }, CONFIG_CACHE_TTL);
+
+  return NextResponse.json(response, { status: 200, headers: cacheHeaders });
 }
 
 export async function OPTIONS() {

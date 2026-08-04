@@ -1,6 +1,7 @@
 import { chatbotUpdateSchema } from "@/lib/validations";
 import { normalizeProvider } from "@/lib/options";
 import { requireOwner } from "@/lib/auth";
+import { Cache } from "@/lib/cache";
 import { db_connection } from "@/lib/db";
 import { getChatbot, serializeBot } from "@/lib/chatbots";
 import { buildKnowledge } from "@/lib/knowledge";
@@ -92,6 +93,13 @@ export async function PUT(request: NextRequest, { params }: Params) {
   });
 
   await bot.save();
+  await Cache.delete(`cache:bot_config:${botId}`);
+  await Cache.delete(`cache:bot:${owner.ownerId}:${botId}`);
+  await Cache.delete(`cache:bots:${owner.ownerId}`);
+  await Cache.delete(`cache:analytics:${owner.ownerId}`);
+  await Cache.delete(`cache:analytics:${owner.ownerId}:${botId}`);
+  await Cache.delete(`cache:conversations:${botId}`);
+  await Cache.deletePattern(`cache:conversation:${botId}:*`);
   return NextResponse.json({ success: true, bot: serializeBot(bot.toObject()) });
 }
 
@@ -108,6 +116,14 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
 
   const _id = new mongoose.Types.ObjectId(botId);
   await ChatbotModel.deleteOne({ _id: botId, ownerId: owner.ownerId });
+
+  await Cache.delete(`cache:bot_config:${botId}`);
+  await Cache.delete(`cache:bot:${owner.ownerId}:${botId}`);
+  await Cache.delete(`cache:analytics:${owner.ownerId}`);
+  await Cache.delete(`cache:analytics:${owner.ownerId}:${botId}`);
+  await Cache.delete(`cache:bots:${owner.ownerId}`);
+  await Cache.delete(`cache:conversations:${botId}`);
+  await Cache.deletePattern(`cache:conversation:${botId}:*`);
 
   // Remove this bot's vectors from Pinecone (best-effort) before dropping the mirrors.
   try {

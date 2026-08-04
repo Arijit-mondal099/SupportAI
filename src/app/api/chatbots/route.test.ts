@@ -8,9 +8,16 @@ const mockList = vi.hoisted(() => vi.fn());
 const mockSerialize = vi.hoisted(() => vi.fn());
 const mockKnowledge = vi.hoisted(() => vi.fn());
 const mockCreate = vi.hoisted(() => vi.fn());
+const mockCache = vi.hoisted(() => ({
+  get: vi.fn(),
+  set: vi.fn(),
+  delete: vi.fn(),
+  deletePattern: vi.fn(),
+}));
 
 vi.mock("@/lib/auth", () => ({ requireOwner: mockRequireOwner }));
 vi.mock("@/lib/db", () => ({ db_connection: vi.fn().mockResolvedValue({}) }));
+vi.mock("@/lib/cache", () => ({ Cache: mockCache }));
 vi.mock("@/lib/chatbots", () => ({ listChatbots: mockList, serializeBot: mockSerialize }));
 vi.mock("@/lib/knowledge", () => ({ buildKnowledge: mockKnowledge }));
 vi.mock("@/models/chatbot.model", () => ({
