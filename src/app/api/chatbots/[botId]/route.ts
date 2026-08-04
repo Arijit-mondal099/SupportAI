@@ -95,6 +95,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
   await bot.save();
   await Cache.delete(`cache:bot_config:${botId}`);
   await Cache.delete(`cache:bot:${owner.ownerId}:${botId}`);
+  await Cache.delete(`cache:bots:${owner.ownerId}`);
   await Cache.delete(`cache:analytics:${owner.ownerId}`);
   await Cache.delete(`cache:analytics:${owner.ownerId}:${botId}`);
   await Cache.delete(`cache:conversations:${botId}`);
