@@ -82,14 +82,6 @@ export async function POST(request: NextRequest, { params }: Params) {
     const { botId } = await params;
     if (!isValidObjectId(botId)) return notFound();
 
-    const rl = await rateLimit(`rl:docs:${owner.ownerId}:${botId}`, 10, 600);
-    if (!rl.allowed) {
-      return NextResponse.json(
-        { success: false, message: "Document upload rate limit exceeded. Try again later." },
-        { status: 429, headers: { "Retry-After": String(rl.resetIn) } },
-      );
-    }
-
     if (!isRagConfigured()) {
       return bad("Knowledge base is not configured on this server (Pinecone).");
     }
@@ -97,6 +89,16 @@ export async function POST(request: NextRequest, { params }: Params) {
     await db_connection();
     const bot = await ChatbotModel.findOne({ _id: botId, ownerId: owner.ownerId });
     if (!bot) return notFound();
+
+    // Rate-limit after confirming the bot belongs to this owner so that
+    // unknown/other-owners' bot IDs don't consume anyone's quota.
+    const rl = await rateLimit(`rl:docs:${owner.ownerId}:${botId}`, 10, 600);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, message: "Document upload rate limit exceeded. Try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.resetIn) } },
+      );
+    }
 
     const { provider, apiKey } = resolveProviderKey(bot);
     if (!apiKey) return bad("Add an API key in this bot's Model & key tab first.");
